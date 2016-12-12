@@ -1,13 +1,72 @@
-
-.menu_size {
-  width: 900px;
-  height: 2000px;
+body {
+   float: left;
 }
 
-
-#food_menu {
-  margin: 3%;
-
+.food-menu {
+   float: left;
 }
 
+.side {
+  float: left;
+  border: 1px solid black;
+  height: 100%;
+  min-height: 600px;
+  width: 20%;
+}
 
+.mainContent {
+  float: left;
+  width: 70%;
+}
+
+.top {
+  float: left;
+  width: 100%;
+}
+
+.pic {
+     width: 100%;
+     max-width: 70px;
+     background: url(/images/kakao01.gif) no-repeat;
+     background-size: 70px;
+  }
+
+  .text {
+     width: 100%;
+     max-width: 70px;
+     background: #000000;
+     opacity: 0;
+     padding: 10%;
+  }
+
+  .text p {
+     padding-top: 22%;
+  }
+
+  .pic:hover .text {
+     opacity: 0.6;
+     text-align: center;
+     color: #ffffff;
+  }
+
+  ul.nav-tabs {
+     width: 100%
+  }
+
+  .menu_size {
+     height: 100%;
+  }
+
+.todayRand {
+     padding-left:3%;
+    color:darkcyan;
+    float:left;
+}
+
+.randTitle {
+   float:left;
+}
+
+.textHidden {
+
+}

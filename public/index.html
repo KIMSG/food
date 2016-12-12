@@ -4,46 +4,27 @@
   <head>
     <meta charset="utf-8">
     <!-- 합쳐지고 최소화된 최신 CSS -->
-    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap.css">
     <!-- 부가적인 테마 -->
-    <link rel="stylesheet" href="/css/bootstrap-theme.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.css">
     <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-
-    <title>배고프다v.3</title>
+    <link rel="stylesheet" href="js/bootstrap.min.js">
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <!-- 파이어베이스 SDK-->
+    <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
+    <link rel="stylesheet" href="css/common.css">
+    <title>배고프다v.4</title>
   </head>
   <style type="text/css">
-  .pic{
-       width: 100%;
-       max-width: 70px;
-       background: url(images/kakao01.gif) no-repeat;
-       background-size: 70px;
-    }
-    .text{
-       width: 100%;
-       max-width: 70px;
-       background:#000000;
-       opacity:0;
-       padding:10%;
-    }
-    .text p{
-       padding-top:22%;
-    }
-    .pic:hover .text {
-       opacity:0.6;
-       text-align:center;
-       color:#ffffff;
 
-    }
-    ul.nav-tabs{
-        width:100%
-    }
   </style>
 
   <script type="text/javascript">
 
     $(document).ready(function() {
+
+      calendar();
+
       var food = "";
       var foodList = [];
       var foodLength = $("li[role='presentation']").length;
@@ -56,7 +37,7 @@
         var id = e.target.getAttribute('id');
 
           $('#food_menu').find('li').removeClass("active");
-          $('#menu').load("/html/"+id+".html");
+          $('#menu').load("html/"+id+".html");
           $(this).parent().parent().addClass("active");
 
       });
@@ -80,6 +61,60 @@
 
     });
 
+    function calendar(){
+      var date = new Date();
+      var currentYear = date.getYear() + 1900;
+      var currentMonth = date.getMonth()+1;
+      var currentDate = date.getDate();
+      var currentDay = date.getDay();
+
+      var dateString = new Array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
+      var lastDate = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+
+      if( (currentYear % 4 === 0 && currentYear % 100 !== 0) || currentYear % 400 === 0 )
+      lastDate[1] = 29;
+      //각 달의 마지막 일을 계산, 윤년의 경우 년도가 4의 배수이고 100의 배수가 아닐 때 혹은 400의 배수일 때 2월달이 29일 임.
+
+      var currentLastDate = lastDate[currentMonth-1];
+      var week = Math.ceil( ( currentDay + currentLastDate ) / 7 );
+      //총 몇 주인지 구함.
+
+      if(currentMonth != 1)
+      var prevDate = currentYear + '-' + ( currentMonth - 1 ) + '-' + currentDate;
+      else
+      var prevDate = ( currentYear - 1 ) + '-' + 12 + '-' + currentDate;
+      //만약 이번달이 1월이라면 1년 전 12월로 출력.
+
+      if(currentMonth != 12)
+      var nextDate = currentYear + '-' + ( currentMonth + 1 ) + '-' + currentDate;
+      else
+      var nextDate = ( currentYear + 1 ) + '-' + 1 + '-' + currentDate;
+      //만약 이번달이 12월이라면 1년 후 1월로 출력.
+
+
+      if( currentMonth < 10 )
+      var currentMonth = '0' + currentMonth;
+      //10월 이하라면 앞에 0을 붙여준다.
+
+      var calendar = '';
+      var dateNum = 1 - currentDay;
+
+      calendar += '<h4>이번달 점심 방문</h4>';
+      for(var i = 0; i < currentLastDate; i++){
+        var day = pad(i, 2);
+        var today = currentYear+"_"+currentMonth+"_"+day;
+        calendar += "<h5 >"+today+" :<span style='color:darkcyan;' id='"+today+"'></span></h5>";
+        show(today);
+      }
+      $('#monthly').html(calendar);
+
+
+    }
+
+    function pad(n, width) {
+      n = n + '';
+      return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+    }
 
   </script>
 
@@ -90,45 +125,60 @@
     <img alt="양식" src="images/food.png">
     <img alt="후식" src="images/cup.png">
 -->
-     <!--<input type="text" id="name">
-     <button id="put">send</button>-->
-    <div class="pic"  style="float:left; cursor:pointer;" id="kakao_1">
-       <div class="text">
-          <p>랜덤<br> 메뉴</p>
-       </div>
+    <!--<input alt="이름" type="text" name="userName">-->
+
+   <!--<div id="Message1"></div>-->
+   <div class="top">
+      <div class="pic"  style="float:left; cursor:pointer;" id="kakao_1">
+         <div class="text">
+            <p>랜덤<br> 메뉴</p>
+         </div>
+      </div>
+      <h3 class="randTitle">오늘의 랜덤 메뉴</h3>
+      <div id="today_rand" class="todayRand" ></div>
+   </div>
+
+   <div class="side">
+      <div>
+         <h5 style="width:20%; float:left;">오늘 : </h5>
+          <input alt="이름" type="text" name="collect" style="width:50%; float:left;" class="form-control" >
+         <button id="BtnTest" class="btn btn-default btn-ms" style="float:left;">입력</button>
+      </div>
+
+       <div style="margin-top:25%;" id="monthly"></div>
+
+   </div>
+
+    <div class="mainContent" id="content">
+       <ul class="nav nav-tabs food-menu" id="food_menu">
+        <li role="presentation"><a href="#"><span id="joobang">주방샵</span></a></li>
+        <li role="presentation"><a href="#"><span id="delicious">맛있는접시</span></a></li>
+        <li role="presentation"><a href="#"><span id="ara">아라부대찌개</span></a></li>
+        <li role="presentation"><a href="#"><span id="sunflower">해바라기</span></a></li>
+        <li role="presentation"><a href="#"><span id="newworld">신세카이</span></a></li>
+        <li role="presentation"><a href="#"><span id="kalnoodle">목동해물칼국수</span></a></li>
+        <li role="presentation"><a href="#"><span id="bornsoup">뼈해장국</span></a></li>
+        <li role="presentation"><a href="#"><span id="bong">봉스시</span></a></li>
+        <li role="presentation"><a href="#"><span id="booddoo">부뚜막</span></a></li>
+        <li role="presentation"><a href="#"><span id="verne">베르네</span></a></li>
+        <li role="presentation"><a href="#"><span id="sinjun">신전떡볶이</span></a></li>
+        <li role="presentation"><a href="#"><span id="moms">맘스터치</span></a></li>
+        <li role="presentation"><a href="#"><span id="bonchina">본차이나</span></a></li>
+        <li role="presentation"><a href="#"><span id="burgerking">버거킹</span></a></li>
+        <li role="presentation"><a href="#"><span id="chea">채상궁</span></a></li>
+        <li role="presentation"><a href="#"><span id="dawn">새벽집</span></a></li>
+        <li role="presentation"><a href="#"><span id="grandmather">할매순대국</span></a></li>
+        <li role="presentation"><a href="#"><span id="muyngga">명가김밥</span></a></li>
+      </ul>
+      <div class="menu_size" id="menu"></div>
     </div>
-    <h3 style="float:left;">오늘의 랜덤 메뉴</h3>
-    <div id="today_rand"  style="padding-left:3%; color:darkcyan; float:left;"></div>
-     <ul class="nav nav-tabs" id="food_menu"  style="float:left;">
-      <li role="presentation"><a href="#"><span id="joobang">주방샵</span></a></li>
-      <li role="presentation"><a href="#"><span id="delicious">맛있는접시</span></a></li>
-      <li role="presentation"><a href="#"><span id="ara">아라부대찌개</span></a></li>
-      <li role="presentation"><a href="#"><span id="sunflower">해바라기</span></a></li>
-      <li role="presentation"><a href="#"><span id="newworld">신세계</span></a></li>
-      <li role="presentation"><a href="#"><span id="kalnoodle">목동해물칼국수</span></a></li>
-      <li role="presentation"><a href="#"><span id="bornsoup">뼈해장국</span></a></li>
-
-      <li role="presentation"><a href="#"><span id="bong">봉스시</span></a></li>
-      <li role="presentation"><a href="#"><span id="booddoo">부뚜막</span></a></li>
-      <li role="presentation"><a href="#"><span id="verne">베르네</span></a></li>
-      <li role="presentation"><a href="#"><span id="sinjun">신전떡볶이</span></a></li>
-      <li role="presentation"><a href="#"><span id="moms">맘스터치</span></a></li>
-      <li role="presentation"><a href="#"><span id="bonchina">본차이나</span></a></li>
-      <li role="presentation"><a href="#"><span id="burgerking">버거킹</span></a></li>
-      <li role="presentation"><a href="#"><span id="chea">채상궁</span></a></li>
-      <li role="presentation"><a href="#"><span id="dawn">새벽집</span></a></li>
-      <li role="presentation"><a href="#"><span id="grandmather">할매순대국</span></a></li>
-      <li role="presentation"><a href="#"><span id="muyngga">명가김밥</span></a></li>
-
-    </ul>
-
-    <div class="menu_size" id="menu"></div>
 
 
   </body>
-  <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
+
   <script type="text/javascript">
-       // Initialize Firebase
+
+    // Initialize Firebase
     var config = {
         apiKey: "AIzaSyA39-3l4_HNf1bzIbXw4ItnLZB9_-zTu6E",
         authDomain: "food-63973.firebaseapp.com",
@@ -138,14 +188,37 @@
     };
 
     firebase.initializeApp(config);
-
     // Get a reference to the database service
-    /*var database = firebase.database();*/
+    $('#BtnTest').click(function(){
+        var date = new Date();
+        var name = $('input[name=userName]').val();
+        var collect = $('input[name=collect]').val();
+        var year = date.getYear() + 1900;
+        var month = date.getMonth()+1;
+        var date = date.getDate();
+        var today = year+"_"+month+"_"+date;
 
-    function writeUserData(name) {
-        alert(name);
-        firebase.database().ref('/' + name).set(name);
+        regist(today, collect);
+        /*show(today);*/
+    });
+
+    function regist(today, collect){
+      /*firebase.database().ref('selectMenu/'+date+'/'+'userName' + name+'/').set({
+          userCollect : collect
+        });  */
+      firebase.database().ref('todayVisit/'+today+'/').set({
+          userCollect : collect
+        });
     }
+
+    function show(today){
+      firebase.database().ref('todayVisit/'+today+'/').on('value', function(e){
+        var message = e.val();
+        $("#"+today).text(message.userCollect);
+      });
+    }
+
+
   </script>
 
 </html>
