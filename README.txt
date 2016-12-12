@@ -1,4 +1,4 @@
-사용법
+ 사용법    https://food-63973.firebaseapp.com/
 1. 새로운 가게 등록
   <li role="presentation"><a href="#"><span id="bornsoup">뼈해장국</span></a></li>
   원하는 id값을 설정 한다.
