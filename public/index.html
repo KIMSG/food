@@ -13,7 +13,8 @@
     <!-- 파이어베이스 SDK-->
     <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
     <link rel="stylesheet" href="css/common.css">
-    <title>배고프다v.4</title>
+    <link rel="icon" href="/images/rice.png" type="image/x-icon">
+    <title>배고프다v.5</title>
   </head>
   <style type="text/css">
 
@@ -22,44 +23,200 @@
   <script type="text/javascript">
 
     $(document).ready(function() {
+      /*
+       $('#popupBack').css("display", "none");
+       $('#popupLayer').css("display", "none");
+      */
+        /* Initialize Firebase*/
+        var config = {
+          apiKey: "AIzaSyA39-3l4_HNf1bzIbXw4ItnLZB9_-zTu6E",
+          authDomain: "food-63973.firebaseapp.com",
+          databaseURL: "https://food-63973.firebaseio.com",
+          storageBucket: "food-63973.appspot.com",
+          messagingSenderId: "842188562679"
+        };
 
-      calendar();
+        firebase.initializeApp(config);
 
-      var food = "";
-      var foodList = [];
-      var foodLength = $("li[role='presentation']").length;
+        /* 음식점 저장 리스트 */
 
-      for(var i=0; i<foodLength; i++){
-        foodList[i] = $("li[role='presentation']").eq(i).children().children().text();
-      }
+        var storelength = "";
+        var foodList = [];   /*랜덤을 위한 음식 목록*/
 
-      $('#food_menu').click(function(e){
-        var id = e.target.getAttribute('id');
+        firebase.database().ref('storeList/').on('value', function(e){
+            var message = e.val();
+            var str = [];
+            var storeResult = "";
+            storelength = Object.keys(message).length + 1;
+                if( storelength < 10 ){
+                    storelength = '0' + storelength;
+                }
 
-          $('#food_menu').find('li').removeClass("active");
-          $('#menu').load("html/"+id+".html");
-          $(this).parent().parent().addClass("active");
+            for(var temp=1; temp<storelength; temp++){
+              var i = temp-1;
+                if( temp < 10 ){
+                      temp = '0' + temp;
+                  }
+                str[i] = temp;
+              }
 
-      });
 
-      $('#kakao_1').click(function(){
-          var rand = Math.floor(Math.random() * foodLength);
+
+        /* 음식점 리스트 라벨 */
+        var htmlStr = "";
+            for(var i=0; i<str.length; i++){
+                var temp = str[i];
+
+                  storeResult = message[temp];
+                  makeLabel(storeResult['storeId'],storeResult['storeName']);
+                  foodList[i] = storeResult['storeName'];
+
+                  function makeLabel(storeId, storeName){
+
+                      htmlStr +="<div class='col-sm-6'>";
+                      htmlStr +=  "<div class='thumbnail' style='max-width:400px;' >";
+                      htmlStr +=    "<div class='caption'  onClick=\"layer('"+storeId+"'); return false;\">";
+                      htmlStr +=      "<img style='width:100%; height:250px;' src='images/"+storeId+"/"+storeId+"01.jpg'alt='테스트'>";
+                      htmlStr +=      "<h3>"+storeName+"</h3>";
+                      htmlStr +=    "</div>";
+                      htmlStr +=  "</div>";
+                      htmlStr +="</div> ";
+
+                  }
+
+              }
+          $('#menuLabelList').html(htmlStr);
+        });
+
+        calendar();
+
+        /*가게 이름, id 등록*/
+        $('#BtnStore').click(function(){
+          var storeId = $('input[name=storeId]').val();
+          var storeName = $('input[name=storeName]').val();
+
+          console.log('클릭:'+storelength);
+          if( storelength < 0 )
+          storelength = '01';
+          registStore(storelength, storeId, storeName);
+        });
+
+        /* 오늘 메뉴 등록 */
+        $('#BtnTest').click(function(){
+          var date = new Date();
+          var name = $('input[name=userName]').val();
+          var collect = $('input[name=collect]').val();
+          var year = date.getYear() + 1900;
+          var month = date.getMonth()+1;
+          var date = date.getDate();
+          var today = year+"_"+month+"_"+date;
+
+          regist(today, collect);
+        });
+
+        $('#kakao_1').click(function(){
+          var rand = Math.floor(Math.random() * storelength);
           var rand_menu = "";
-          for(var i=0; i<foodLength; i++){
+          for(var i=0; i<storelength-1; i++){
             if(i == rand){
                 rand_menu = "<h3>"+foodList[i]+"</h3>";
             }
           }
 
           $('#today_rand').html(rand_menu);
-      });
 
-      $('#put').click(function(){
-          var name = $('#name').val();
-          writeUserData(name);
-      });
+        });
 
     });
+
+  </script>
+
+  <body>
+<!--
+    <img alt="한식" src="images/rice.png">
+    <img alt="중식" src="images/kitchen-pack.png">
+    <img alt="양식" src="images/food.png">
+    <img alt="후식" src="images/cup.png">
+-->
+    <!--<input alt="이름" type="text" name="userName">-->
+
+   <!--<div id="Message1"></div>-->
+    <div class="top">
+      <div class="pic"  id="kakao_1">
+         <div class="text">
+            <p>랜덤<br> 메뉴</p>
+         </div>
+      </div>
+      <h3 class="randTitle">오늘의 랜덤 메뉴</h3>
+      <div id="today_rand" class="todayRand" ></div>
+    </div>
+
+    <div class="side">
+     <div style="margin-top:5%;" id="monthly"></div>
+      <div>
+         <h5 style="width:20%; float:left;">오늘 : </h5>
+          <input alt="이름" type="text" name="collect" style="width:50%; float:left;" class="form-control" >
+         <button id="BtnTest" class="btn btn-default btn-ms" style="float:left;">입력</button>
+      </div>
+       <br><br>
+      <div>
+         <h5 style="width:20%; float:left;">가게id</h5>
+          <input alt="이름" type="text" name="storeId" style="width:50%; float:left;" class="form-control" >
+          <br><br>
+          <h5 style="width:20%; float:left;">가게이름</h5>
+          <input alt="이름" type="text" name="storeName" style="width:50%; float:left;" class="form-control" >
+         <button id="BtnStore" class="btn btn-default btn-ms" style="float:left;">입력</button>
+      </div>
+    </div>
+    <div class="mainContent" id="content">
+
+       <div class="menu_popup" id="popupBack"></div>
+       <div class="menu_popup_layer" id="popupLayer">
+         <div class="menu_popup_close">X</div>
+       </div>
+
+      <div class="row" id="menuLabelList"> </div> <!--//row-->
+
+      <div class="menu_size" id="menu"></div>
+    </div>
+
+  </body>
+
+  <script type="text/javascript">
+    function layer(id){
+      console.log(id);
+      $('#popupBack').css("display", "");
+      $('#popupLayer').css("display", "");
+      $('#popupLayer').load("/html/"+id+".html");
+    }
+
+    function registStore(length,storeId, storeName){
+
+      firebase.database().ref('storeList/'+length+'/').set({
+          storeId : storeId,
+          storeName : storeName
+        });
+    }
+
+    function regist(today, collect){
+
+      firebase.database().ref('todayVisit/'+today+'/').set({
+          userCollect : collect
+        });
+    }
+
+    function show(today){
+      firebase.database().ref('todayVisit/'+today+'/').on('value', function(e){
+        var message = e.val();
+        var str = "";
+        for(var userCollect in message){
+          str += message[userCollect] + "\n";
+
+        }
+        $('#'+today).html(str);
+
+      });
+    }
 
     function calendar(){
       var date = new Date();
@@ -114,108 +271,6 @@
     function pad(n, width) {
       n = n + '';
       return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
-    }
-
-  </script>
-
-  <body>
-<!--
-    <img alt="한식" src="images/rice.png">
-    <img alt="중식" src="images/kitchen-pack.png">
-    <img alt="양식" src="images/food.png">
-    <img alt="후식" src="images/cup.png">
--->
-    <!--<input alt="이름" type="text" name="userName">-->
-
-   <!--<div id="Message1"></div>-->
-   <div class="top">
-      <div class="pic"  style="float:left; cursor:pointer;" id="kakao_1">
-         <div class="text">
-            <p>랜덤<br> 메뉴</p>
-         </div>
-      </div>
-      <h3 class="randTitle">오늘의 랜덤 메뉴</h3>
-      <div id="today_rand" class="todayRand" ></div>
-   </div>
-
-   <div class="side">
-      <div>
-         <h5 style="width:20%; float:left;">오늘 : </h5>
-          <input alt="이름" type="text" name="collect" style="width:50%; float:left;" class="form-control" >
-         <button id="BtnTest" class="btn btn-default btn-ms" style="float:left;">입력</button>
-      </div>
-
-       <div style="margin-top:25%;" id="monthly"></div>
-
-   </div>
-
-    <div class="mainContent" id="content">
-       <ul class="nav nav-tabs food-menu" id="food_menu">
-        <li role="presentation"><a href="#"><span id="joobang">주방샵</span></a></li>
-        <li role="presentation"><a href="#"><span id="delicious">맛있는접시</span></a></li>
-        <li role="presentation"><a href="#"><span id="ara">아라부대찌개</span></a></li>
-        <li role="presentation"><a href="#"><span id="sunflower">해바라기</span></a></li>
-        <li role="presentation"><a href="#"><span id="newworld">신세카이</span></a></li>
-        <li role="presentation"><a href="#"><span id="kalnoodle">목동해물칼국수</span></a></li>
-        <li role="presentation"><a href="#"><span id="bornsoup">뼈해장국</span></a></li>
-        <li role="presentation"><a href="#"><span id="bong">봉스시</span></a></li>
-        <li role="presentation"><a href="#"><span id="booddoo">부뚜막</span></a></li>
-        <li role="presentation"><a href="#"><span id="verne">베르네</span></a></li>
-        <li role="presentation"><a href="#"><span id="sinjun">신전떡볶이</span></a></li>
-        <li role="presentation"><a href="#"><span id="moms">맘스터치</span></a></li>
-        <li role="presentation"><a href="#"><span id="bonchina">본차이나</span></a></li>
-        <li role="presentation"><a href="#"><span id="burgerking">버거킹</span></a></li>
-        <li role="presentation"><a href="#"><span id="chea">채상궁</span></a></li>
-        <li role="presentation"><a href="#"><span id="dawn">새벽집</span></a></li>
-        <li role="presentation"><a href="#"><span id="grandmather">할매순대국</span></a></li>
-        <li role="presentation"><a href="#"><span id="muyngga">명가김밥</span></a></li>
-      </ul>
-      <div class="menu_size" id="menu"></div>
-    </div>
-
-
-  </body>
-
-  <script type="text/javascript">
-
-    // Initialize Firebase
-    var config = {
-        apiKey: "AIzaSyA39-3l4_HNf1bzIbXw4ItnLZB9_-zTu6E",
-        authDomain: "food-63973.firebaseapp.com",
-        databaseURL: "https://food-63973.firebaseio.com",
-        storageBucket: "food-63973.appspot.com",
-        messagingSenderId: "842188562679"
-    };
-
-    firebase.initializeApp(config);
-    // Get a reference to the database service
-    $('#BtnTest').click(function(){
-        var date = new Date();
-        var name = $('input[name=userName]').val();
-        var collect = $('input[name=collect]').val();
-        var year = date.getYear() + 1900;
-        var month = date.getMonth()+1;
-        var date = date.getDate();
-        var today = year+"_"+month+"_"+date;
-
-        regist(today, collect);
-        /*show(today);*/
-    });
-
-    function regist(today, collect){
-      /*firebase.database().ref('selectMenu/'+date+'/'+'userName' + name+'/').set({
-          userCollect : collect
-        });  */
-      firebase.database().ref('todayVisit/'+today+'/').set({
-          userCollect : collect
-        });
-    }
-
-    function show(today){
-      firebase.database().ref('todayVisit/'+today+'/').on('value', function(e){
-        var message = e.val();
-        $("#"+today).text(message.userCollect);
-      });
     }
 
 

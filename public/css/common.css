@@ -17,6 +17,7 @@ body {
 .mainContent {
   float: left;
   width: 70%;
+  margin-left: 2%;
 }
 
 .top {
@@ -29,6 +30,8 @@ body {
      max-width: 70px;
      background: url(/images/kakao01.gif) no-repeat;
      background-size: 70px;
+      float:left;
+    cursor:pointer;
   }
 
   .text {
@@ -69,4 +72,30 @@ body {
 
 .textHidden {
 
+}
+
+.menu_popup {
+  position: absolute;
+  width: 70%;
+  height: 100%;
+  background-color: grey;
+  z-index: 1;
+  opacity: 0.5;
+}
+
+.menu_popup_layer {
+  margin: 5%;
+  width: 60%;
+  height: 90%;
+  border: 4px solid black;
+  background-color: white;
+  position: absolute;
+  z-index: 10;
+}
+
+.menu_popup_close {
+  font-size: 300%;
+  font-weight: 800;
+  width: 5%;
+  float: right;
 }
