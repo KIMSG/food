@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<!--<html>
 
   <head>
     <meta charset="utf-8">
@@ -10,7 +10,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
   </head>
-  <body>
+  <body>-->
 <style type="text/css">
   img{
     width:100%;
@@ -24,6 +24,9 @@
   }
   .store_info {
     margin-left: 10%;
+  }
+  .reple:hover {
+    background-color: #eee;
   }
 </style>
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -45,7 +48,6 @@
           <img alt="주방샵01" src="images/joobang/joobang01.jpg" class="img-rounded">
         </div>
 
-<!--
         <div class="item">
           <img alt="주방샵02" src="images/joobang/joobang02.jpg" class="img-rounded">
         </div>
@@ -72,7 +74,7 @@
 
         <div class="item">
           <img alt="주방샵08" src="images/joobang/joobang08.jpg" class="img-rounded">
-        </div>-->
+        </div>
       </div>
 
       <!-- Left and right controls -->
@@ -109,23 +111,19 @@
          <div class="row" style="margin-top:2%;">
             <div class="col-md-10">
                <div class="panel panel-default">
-                  <div class="panel-body">
-
-
-
-
-                  </div>
-
+                  <div class="panel-body" id="comentList"> </div>
                 </div>
              </div>
           </div>
        </div>
     </div>
+
   <!--</body>-->
   <script type="text/javascript">
     $(document).ready(function(){
 
         /* Initialize Firebase*/
+/*
         var config = {
           apiKey: "AIzaSyA39-3l4_HNf1bzIbXw4ItnLZB9_-zTu6E",
           authDomain: "food-63973.firebaseapp.com",
@@ -135,12 +133,13 @@
         };
 
         firebase.initializeApp(config);
+*/
 
-        var storeTitle = $('#storeTitle').text();
-        var storeId = "";
+/*        var storeTitle = $('#storeTitle').text();
+        var LayerstoreId = "";*/
 
         /* 음식점 저장 리스트 */
-        firebase.database().ref('storeList/').on('value', function(e){
+/*        firebase.database().ref('storeList/').on('value', function(e){
             var message = e.val();
             var storelength = "";
             var storeResult = "";
@@ -163,62 +162,66 @@
                 storeResult = message[temp];
 
                 if(storeTitle == storeResult['storeName']){
-                    storeId = storeResult['storeId'];
+                    LayerstoreId = storeResult['storeId'];
                 }
             }
-        });
+        });*/
 
         /*댓글 불러오기*/
-        firebase.database().ref('RepleList/'+storeId+'/').on('value', function(e){
+/*        firebase.database().ref('RepleList/'+LayerstoreId+'/').on('value', function(e){
             var message = e.val();
-            var replelength = Object.keys(message[storeId]).length;
-            var reples = Object.keys(message[storeId]);
+            var replelength = Object.keys(message[LayerstoreId]).length;
+            var reples = Object.keys(message[LayerstoreId]);
+            var htmlStr = "";
 
             for(var i=0; i<replelength; i++){
                 var reple = reples[i];
-                repleList(storeId,reple);
+                htmlStr += repleList(replelength,LayerstoreId,reple);
             }
-        });
+            $('#comentList').html(htmlStr);
+        });*/
 
 
         /*댓글 등록*/
-        $('#BtnRegist').click(function(){
+/*        $('#BtnRegist').click(function(){
             var registName = $('input[name=registName]').val();
             var storeComent = $('input[name=storeComent]').val();
-            registComent(storeId, registName, storeComent);
-        });
+            registComent(LayerstoreId, registName, storeComent);
+        });*/
     });
 
     /*댓글 전체 불러오기*/
-    function repleList(storeId,reple){
+/*
+    function repleList(replelength,storeId,reple){
+        var htmlStr = "";
+
         firebase.database().ref('RepleList/'+storeId+'/'+reple+'/').on('value', function(e){
             var message = e.val();
-            var coment = message['coment'];
-            var registName = message['registName'];
-            var registDate = message['registDate'];
-            var htmlStr = "";
+            var coment = "";
+            var registName = "";
+            var registDate = "";
 
+            coment = message['coment'];
+            registName = message['registName'];
+            registDate = message['registDate'];
 
-            htmlStr += "<div>";
+            htmlStr += "<div class='reple'>";
             htmlStr += "    <div class='row'>";
-            htmlStr += "         <div class='col-md-2' style='font-weight: 900;'><h3>"++"<small>&nbsp;&nbsp;날짜날짜</small></h3></div>";
+            htmlStr += "         <div class='col-md-6' style='font-weight: 900;'><h3>"+registName+"<small>&nbsp;&nbsp;"+registDate+"</small></h3></div>";
             htmlStr += "    </div>";
             htmlStr += "    <div class='row'>";
-            htmlStr += "         <div class='col-md-10' style='color:grey;'>내용내용내용내용</div>";
+            htmlStr += "         <div class='col-md-10' style='color:grey;'>"+coment+"</div>";
             htmlStr += "    </div>";
             htmlStr += "</div>";
-
-
-            console.log(coment);
-            console.log(registName);
-            console.log(registDate);
-
-
         });
+
+        return htmlStr;
     }
+*/
 
 
     /*댓글 등록*/
+/*
     function registComent(storeId, registName, storeComent){
       var date = new Date();
       var currentYear = date.getYear() + 1900;
@@ -234,6 +237,7 @@
           registDate : registDate
         });
     }
+*/
 
   </script>
 <!--
