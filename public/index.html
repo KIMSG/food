@@ -3,30 +3,25 @@
 
   <head>
     <meta charset="utf-8">
-    <!-- 합쳐지고 최소화된 최신 CSS -->
-    <link rel="stylesheet" href="css/bootstrap.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <!-- 부가적인 테마 -->
-    <link rel="stylesheet" href="css/bootstrap-theme.css">
-    <!-- 합쳐지고 최소화된 최신 자바스크립트 -->
-    <link rel="stylesheet" href="js/bootstrap.min.js">
-    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- 파이어베이스 SDK-->
     <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
     <link rel="stylesheet" href="css/common.css">
     <link rel="icon" href="/images/rice.png" type="image/x-icon">
-    <title>배고프다v.5</title>
+    <title>배고프다v.6</title>
   </head>
-  <style type="text/css">
-
-  </style>
 
   <script type="text/javascript">
-
     $(document).ready(function() {
-      /*
+        /*PopUp 감추기*/
        $('#popupBack').css("display", "none");
        $('#popupLayer').css("display", "none");
-      */
+
         /* Initialize Firebase*/
         var config = {
           apiKey: "AIzaSyA39-3l4_HNf1bzIbXw4ItnLZB9_-zTu6E",
@@ -60,30 +55,23 @@
                 str[i] = temp;
               }
 
-
-
         /* 음식점 리스트 라벨 */
         var htmlStr = "";
             for(var i=0; i<str.length; i++){
                 var temp = str[i];
-
                   storeResult = message[temp];
                   makeLabel(storeResult['storeId'],storeResult['storeName']);
                   foodList[i] = storeResult['storeName'];
-
                   function makeLabel(storeId, storeName){
-
                       htmlStr +="<div class='col-sm-6'>";
                       htmlStr +=  "<div class='thumbnail' style='max-width:400px;' >";
                       htmlStr +=    "<div class='caption'  onClick=\"layer('"+storeId+"'); return false;\">";
-                      htmlStr +=      "<img style='width:100%; height:250px;' src='images/"+storeId+"/"+storeId+"01.jpg'alt='테스트'>";
+                      htmlStr +=      "<img style='width:100%; height:250px;' src='images/"+storeId+"/"+storeId+"01.jpg' alt='"+storeName+"'>";
                       htmlStr +=      "<h3>"+storeName+"</h3>";
                       htmlStr +=    "</div>";
                       htmlStr +=  "</div>";
                       htmlStr +="</div> ";
-
                   }
-
               }
           $('#menuLabelList').html(htmlStr);
         });
@@ -114,6 +102,7 @@
           regist(today, collect);
         });
 
+        /*랜덤메뉴*/
         $('#kakao_1').click(function(){
           var rand = Math.floor(Math.random() * storelength);
           var rand_menu = "";
@@ -122,9 +111,13 @@
                 rand_menu = "<h3>"+foodList[i]+"</h3>";
             }
           }
-
           $('#today_rand').html(rand_menu);
+        });
 
+        /*팝업창 닫기*/
+        $('#popupClose').click(function(){
+            $('#popupBack').css("display", "none");
+            $('#popupLayer').css("display", "none");
         });
 
     });
@@ -138,10 +131,8 @@
     <img alt="양식" src="images/food.png">
     <img alt="후식" src="images/cup.png">
 -->
-    <!--<input alt="이름" type="text" name="userName">-->
 
-   <!--<div id="Message1"></div>-->
-    <div class="top">
+   <div class="top">
       <div class="pic"  id="kakao_1">
          <div class="text">
             <p>랜덤<br> 메뉴</p>
@@ -172,11 +163,13 @@
 
        <div class="menu_popup" id="popupBack"></div>
        <div class="menu_popup_layer" id="popupLayer">
-         <div class="menu_popup_close">X</div>
+          <div class="menu_popup_title">
+             <div class="menu_popup_close" id="popupClose">X</div>
+             <div class="menu_popup_content" id="popupContent"></div>
+          </div>
        </div>
 
       <div class="row" id="menuLabelList"> </div> <!--//row-->
-
       <div class="menu_size" id="menu"></div>
     </div>
 
@@ -184,40 +177,41 @@
 
   <script type="text/javascript">
     function layer(id){
-      console.log(id);
       $('#popupBack').css("display", "");
       $('#popupLayer').css("display", "");
-      $('#popupLayer').load("/html/"+id+".html");
+      $('#popupContent').load("/html/"+id+".html");
+
+      $( 'html, body' ).animate( { scrollTop : 0 }, 400 );
     }
 
+    /*가게등록*/
     function registStore(length,storeId, storeName){
-
       firebase.database().ref('storeList/'+length+'/').set({
           storeId : storeId,
           storeName : storeName
         });
     }
 
+    /*이번달 점심 등록*/
     function regist(today, collect){
-
       firebase.database().ref('todayVisit/'+today+'/').set({
           userCollect : collect
         });
     }
 
+    /*이번달 리스트*/
     function show(today){
       firebase.database().ref('todayVisit/'+today+'/').on('value', function(e){
         var message = e.val();
         var str = "";
         for(var userCollect in message){
           str += message[userCollect] + "\n";
-
         }
         $('#'+today).html(str);
-
       });
     }
 
+    /*달력 계산*/
     function calendar(){
       var date = new Date();
       var currentYear = date.getYear() + 1900;
