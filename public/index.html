@@ -12,8 +12,9 @@
     <!-- 파이어베이스 SDK-->
     <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
     <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/layer.css">
     <link rel="icon" href="/images/rice.png" type="image/x-icon">
-    <title>배고프다v.6</title>
+    <title>배고프다v.7</title>
   </head>
 
   <script type="text/javascript">
@@ -37,8 +38,6 @@
 
         var storelength = "";
         var foodList = [];   /*랜덤을 위한 음식 목록*/
-        /*var storeTitle = $('#storeTitle').text();
-        var LayerstoreId = "";*/
 
         firebase.database().ref('storeList/').on('value', function(e){
             var message = e.val();
@@ -57,46 +56,40 @@
                 str[i] = temp;
               }
 
-        /* 음식점 리스트 라벨 */
-        var htmlStr = "";
-            for(var i=0; i<str.length; i++){
-                var temp = str[i];
-                  storeResult = message[temp];
-                  /*if(storeTitle == storeResult['storeName']){
-                        LayerstoreId = storeResult['storeId'];
-                  }*/
-                  makeLabel(storeResult['storeId'],storeResult['storeName']);
-                  foodList[i] = storeResult['storeName'];
-                  function makeLabel(storeId, storeName){
-                      htmlStr +="<div class='col-sm-6'>";
-                      htmlStr +=  "<div class='thumbnail' style='max-width:400px;' >";
-                      htmlStr +=    "<div class='caption'  onClick=\"layer('"+storeId+"'); return false;\">";
-                      htmlStr +=      "<img style='width:100%; height:250px;' src='images/"+storeId+"/"+storeId+"01.jpg' alt='"+storeName+"'>";
-                      htmlStr +=      "<h3>"+storeName+"</h3>";
-                      htmlStr +=    "</div>";
-                      htmlStr +=  "</div>";
-                      htmlStr +="</div> ";
-                  }
-              }
+            /* 음식점 리스트 라벨 */
+            var htmlStr = "";
+                for(var i=0; i<str.length; i++){
+                    var temp = str[i];
+                      storeResult = message[temp];
 
-          $('#menuLabelList').html(htmlStr);
+                      makeLabel(storeResult['storeId'],storeResult['storeName']);
+                      foodList[i] = storeResult['storeName'];
+    /*                  if(LayerstoreId == storeResult['storeName']){
+                          LayerstoreId = storeResult['storeId'];
+                      }*/
+                      function makeLabel(storeId, storeName){
+                          htmlStr +="<div class='col-sm-6'>";
+                          htmlStr +=  "<div class='thumbnail' style='max-width:400px;' >";
+                          htmlStr +=    "<div class='caption'  onClick=\"layer('"+storeId+"'); return false;\">";
+                          htmlStr +=      "<img style='width:100%; height:250px;' src='images/"+storeId+"/"+storeId+"01.jpg' alt='"+storeName+"'>";
+                          htmlStr +=      "<h3>"+storeName+"</h3>";
+                          htmlStr +=    "</div>";
+                          htmlStr +=  "</div>";
+                          htmlStr +="</div> ";
+                      }
+                  }
+
+              $('#menuLabelList').html(htmlStr);
         });
 
         calendar();
 
-        /*댓글 등록*/
-        $('#BtnRegist').click(function(){
-            var registName = $('input[name=registName]').val();
-            var storeComent = $('input[name=storeComent]').val();
-            registComent(LayerstoreId, registName, storeComent);
-        });
 
         /*가게 이름, id 등록*/
         $('#BtnStore').click(function(){
           var storeId = $('input[name=storeId]').val();
           var storeName = $('input[name=storeName]').val();
 
-          console.log('클릭:'+storelength);
           if( storelength < 0 )
           storelength = '01';
           registStore(storelength, storeId, storeName);
@@ -133,7 +126,9 @@
             $('#popupLayer').css("display", "none");
         });
 
+
     });
+
 
   </script>
 
@@ -198,20 +193,31 @@
         /*댓글 불러오기*/
         firebase.database().ref('RepleList/'+id+'/').on('value', function(e){
             var message = e.val();
-            var replelength = Object.keys(message).length;
-            var reples = Object.keys(message);
-            var htmlStr = "";
 
-            for(var i=0; i<replelength; i++){
-                var reple = reples[i];
-                htmlStr += repleList(replelength,id,reple);
+            if(message == null || message == ""){
+                var htmlStr = "";
+                htmlStr += "<div class='reple' id='"+id+"'>";
+                htmlStr += "    <div class='row'>";
+                htmlStr += "         <div class='col-md-10' style='color:grey;'>댓글 없음</div>";
+                htmlStr += "    </div>";
+                htmlStr += "</div>";
+            }else{
+                var replelength = Object.keys(message).length;
+                var reples = Object.keys(message);
+                var htmlStr = "";
+
+                for(var i=0; i<replelength; i++){
+                    var reple = reples[i];
+                    htmlStr += repleList(replelength,id,reple);
+                }
+
             }
-
             $('#comentList').html(htmlStr);
+
         });
 
 
-      $( 'html, body' ).animate( { scrollTop : 0 }, 400 );
+        $( 'html, body' ).animate( { scrollTop : 0 }, 400 );
     }
 
     /*가게등록*/
@@ -289,7 +295,6 @@
       }
       $('#monthly').html(calendar);
 
-
     }
 
     function pad(n, width) {
@@ -312,9 +317,9 @@
             registName = message['registName'];
             registDate = message['registDate'];
 
-            htmlStr += "<div class='reple'>";
+            htmlStr += "<div class='reple' id='"+storeId+"'>";
             htmlStr += "    <div class='row'>";
-            htmlStr += "         <div class='col-md-6' style='font-weight: 900;'><h3>"+registName+"<small>&nbsp;&nbsp;"+registDate+"</small></h3></div>";
+            htmlStr += "         <div class='col-md-10' style='font-weight: 900;'><h3>"+registName+"<small>&nbsp;&nbsp;"+registDate+"</small></h3></div>";
             htmlStr += "    </div>";
             htmlStr += "    <div class='row'>";
             htmlStr += "         <div class='col-md-10' style='color:grey;'>"+coment+"</div>";

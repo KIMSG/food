@@ -1,0 +1,31 @@
+<script type="text/javascript">
+    /*댓글 등록*/
+    $('#BtnRegist').click(function(){
+        var LayerstoreId = $('.reple').attr('id');
+        var registName = $('input[name=registName]').val();
+        var storeComent = $('input[name=storeComent]').val();
+
+        registComent(LayerstoreId, registName, storeComent);
+
+    });
+</script>
+       <form class="form-inline">
+      <div class="form-group">
+          <label >Name</label>
+          <input type="text" class="form-control" name="registName" placeholder="김 영돈">
+      </div>
+      <div class="form-group">
+          <label >댓글</label>
+          <input type="text" class="form-control" style="min-width:400px;" name="storeComent" placeholder="정말 맛있는데요.">
+      </div>
+      <div class="form-group">
+          <button id="BtnRegist" class="btn btn-default btn-ms" >입력</button>
+      </div>
+ </form>
+ <div class="row" style="margin-top:2%;">
+    <div class="col-md-10">
+       <div class="panel panel-default">
+          <div class="panel-body" id="comentList"> </div>
+        </div>
+     </div>
+  </div>
