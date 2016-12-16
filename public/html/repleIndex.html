@@ -4,11 +4,28 @@
         var LayerstoreId = $('.reple').attr('id');
         var registName = $('input[name=registName]').val();
         var storeComent = $('input[name=storeComent]').val();
+        var check = true;
 
-        registComent(LayerstoreId, registName, storeComent);
+        if(LayerstoreId == null || LayerstoreId == ""){
+            check = false;
+            alert('로딩중');
+        }
+        if(registName == null || registName == ""){
+            check = false;
+            alert('이름 필수!');
+        }
+
+        if(check == true ){
+            registComent(LayerstoreId, registName, storeComent);
+        }
 
     });
+    $(document).ready(function(){
+        $('#starMain').load('html/starIndex.html');
+    });
+
 </script>
+  <div id="starMain"></div>
        <form class="form-inline">
       <div class="form-group">
           <label >Name</label>

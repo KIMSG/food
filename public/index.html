@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/layer.css">
     <link rel="icon" href="/images/rice.png" type="image/x-icon">
-    <title>배고프다v.7</title>
+    <title>배고프다v.8</title>
   </head>
 
   <script type="text/javascript">
@@ -185,6 +185,23 @@
   </body>
 
   <script type="text/javascript">
+
+    function registStar(currentId){
+        firebase.database().ref('todayVisit/'+today+'/').on('value', function(e){
+          var message = e.val();
+          var str = "";
+          for(var userCollect in message){
+            str += message[userCollect] + "\n";
+          }
+          $('#'+today).html(str);
+        });
+
+        firebase.database().ref('starList/'+length+'/').set({
+            storeId : storeId,
+            storeName : storeName
+          });
+    }
+
     function layer(id){
       $('#popupBack').css("display", "");
       $('#popupLayer').css("display", "");
@@ -215,7 +232,6 @@
             $('#comentList').html(htmlStr);
 
         });
-
 
         $( 'html, body' ).animate( { scrollTop : 0 }, 400 );
     }
