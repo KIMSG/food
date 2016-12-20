@@ -126,10 +126,7 @@
             $('#popupLayer').css("display", "none");
         });
 
-
     });
-
-
   </script>
 
   <body>
@@ -186,21 +183,10 @@
 
   <script type="text/javascript">
 
-    function registStar(currentId){
-        firebase.database().ref('todayVisit/'+today+'/').on('value', function(e){
-          var message = e.val();
-          var str = "";
-          for(var userCollect in message){
-            str += message[userCollect] + "\n";
-          }
-          $('#'+today).html(str);
-        });
+    function registStarLength(){
 
-        firebase.database().ref('starList/'+length+'/').set({
-            storeId : storeId,
-            storeName : storeName
-          });
     }
+
 
     function layer(id){
       $('#popupBack').css("display", "");
