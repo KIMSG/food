@@ -72,13 +72,14 @@
                   var currentId = e.currentTarget.getAttribute('id').split('_')[1];
                   var currentStore = $('.reple').attr('id');
                   addStar(currentId);
-                  registStar(starLength,currentStore,currentId);
+                  registStar(starLength,currentStore,currentId,today);
                   starCheck = true;
                }
          });
 
       });
 
+      var fire = firebase.database();
 
       function addStar(heartLength){
          var currentId = "";
@@ -88,45 +89,29 @@
          }
       }
 
-      function registStar(starLength,currentStore,starScore){
+      function registStar(starLength,currentStore,starScore,today){
          if(currentStore != null || currentStore != "undefined"){
-               firebase.database().ref('starList/'+currentStore+'/').on('value', function(e){
+               fire.ref('starList/'+currentStore+'/').once('value', function(e){
                    var message = e.val();
                    if(message == null || message == ""){
-                        firebase.database().ref('starList/'+currentStore+'/'+starLength+'/').set({
-                            star : starScore
+                        fire.ref('starList/'+currentStore+'/'+starLength+'/').set({
+                            star : starScore,
+                           registDay : today
                         });
                    }else{
                         starLength = message.length;
-                        firebase.database().ref('starList/'+currentStore+'/'+starLength+'/').set({
-                            star : starScore
+                        fire.ref('starList/'+currentStore+'/'+starLength+'/').set({
+                            star : starScore,
+                           registDay : today
                         });
                    }
 
                });
-               console.log(starLength,currentStore,currentId);
            }
       }
    </script>
 
    <form class="form-inline" id="starList"></form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

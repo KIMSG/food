@@ -39,7 +39,7 @@
         var storelength = "";
         var foodList = [];   /*랜덤을 위한 음식 목록*/
 
-        firebase.database().ref('storeList/').on('value', function(e){
+        firebase.database().ref('storeList/').once('value', function(e){
             var message = e.val();
             var str = [];
             var storeResult = "";
@@ -239,7 +239,7 @@
 
     /*이번달 리스트*/
     function show(today){
-      firebase.database().ref('todayVisit/'+today+'/').on('value', function(e){
+      firebase.database().ref('todayVisit/'+today+'/').once('value', function(e){
         var message = e.val();
         var str = "";
         for(var userCollect in message){
