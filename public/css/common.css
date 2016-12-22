@@ -114,3 +114,10 @@ body {
   margin-top: 7%;
   position: absolute;
 }
+
+.mainChart {
+    min-width: 500px;
+    width: 70%;
+    height: 300px;
+    float: left;
+}
