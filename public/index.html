@@ -84,6 +84,7 @@
 
         });
 
+        lank();
         chart();
         calendar();
 
@@ -169,7 +170,17 @@
          <button id="BtnStore" class="btn btn-default btn-ms" style="float:left;">입력</button>
       </div>
     </div>
-    <div class="mainChart" id="chart"></div>
+<!--    <div class="mainLank" id="lank">
+      <div class="lank" id="lank_1">맛있는접시</div>
+      <div class="lank" id="lank_2">해물칼국수</div>
+      <div class="lank" id="lank_3">뼈해장국</div>
+    </div>-->
+
+    <div>
+       이번달랭킹
+      <div class="mainChart" id="chart"></div>
+    </div>
+
     <div class="mainContent" id="content">
 
       <!--시작-->
@@ -188,8 +199,15 @@
   </body>
 
   <script type="text/javascript">
+    /*랭킹 차트를 위함*/
+    function lank(){
+
+    }
+
+
+    /*차트를 위함*/
     function chart(){
-        /*랭킹 차트를 위함*/
+
         var starList = [];
         var storeList = [];
         var score = "";

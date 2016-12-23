@@ -121,3 +121,43 @@ body {
     height: 300px;
     float: left;
 }
+
+.mainLank {
+    min-width: 500px;
+    width: 70%;
+    height: 200px;
+    float: left;
+    font-size: 0;
+}
+
+.lank {
+  width: 20%;
+  height: 60%;
+  display: inline-block;
+  margin: 5%;
+  font-size: 45px;
+   text-align: center;
+   vertical-align: middle;
+   color: cadetblue;
+}
+
+#lank_1 {
+  background-image: url(/images/lank/04.png);
+  background-repeat: no-repeat;
+  background-size: 100% 98%;
+
+}
+
+#lank_2 {
+  background-image: url(/images/lank/03.png);
+  background-repeat: no-repeat;
+  background-size: 100% 98%;
+
+}
+
+#lank_3 {
+  background-image: url(/images/lank/06.png);
+  background-repeat: no-repeat;
+  background-size: 100% 98%;
+
+}
