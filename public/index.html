@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/common.css">
     <link rel="stylesheet" href="css/layer.css">
     <link rel="icon" href="/images/rice.png" type="image/x-icon">
-    <title>배고프다v.8</title>
+    <title>배고프다v.9</title>
   </head>
 
   <script type="text/javascript">
@@ -41,7 +41,7 @@
 
         /* 음식점 저장 리스트 */
 
-        var storelength = "";
+        var storelength = 0;
         var foodList = [];   /*랜덤을 위한 음식 목록*/
 
         firebase.database().ref('storeList/').once('value', function(e){
@@ -79,30 +79,12 @@
                           htmlStr +=  "</div>";
                           htmlStr +="</div> ";
                       }
-
                   }
-
               $('#menuLabelList').html(htmlStr);
-
-              /*랭킹 차트를 위함*/
-                var chart = c3.generate({
-                    bindto: "#chart",
-                    data: {
-                        rows: [
-                          foodList,
-                          [90, 120, 300,90, 120, 300,90, 120, 300,90, 120, 300,90, 120, 300,70,89]
-                        ],
-                        type: 'bar'
-                    },
-                    bar: {
-                        width: {
-                            ratio: 0.5 // this makes bar width 50% of length between ticks
-                        } // or //width: 100 // this makes bar width 100px
-                    }
-                });
 
         });
 
+        chart();
         calendar();
 
 
@@ -206,10 +188,88 @@
   </body>
 
   <script type="text/javascript">
-    $(function(){
+    function chart(){
+        /*랭킹 차트를 위함*/
+        var starList = [];
+        var storeList = [];
+        var score = "";
+        var storeResult = "";
+        var scoreList = [];
 
+        firebase.database().ref('starList/').once('value', function(e){
+            var message = e.val();
+            var starlength = Object.keys(message).length;
+            storeList = Object.keys(message);
 
-    });
+            for ( var stars in storeList) {
+                starList[stars] = message[storeList[stars]];
+            }
+
+            for(var i=0; i<starList.length; i++){
+                score = starList[i];
+                var total = 0;
+
+                for(var j=1; j<score.length; j++){
+                    storeResult = score[j];
+                    total+= eval(storeResult['star']);
+                }
+                scoreList[i] = total;
+            }
+            makeChart(storeList,scoreList);
+
+        });
+    }
+
+    function makeChart(storeList,scoreList){
+        /* 음식점 저장 리스트 */
+
+        var storelength = 0;
+        firebase.database().ref('storeList/').once('value', function(e){
+            var message = e.val();
+            var str = [];
+            var storeResult = "";
+            storelength = Object.keys(message).length + 1;
+                if( storelength < 10 ){
+                    storelength = '0' + storelength;
+                }
+
+            for(var temp=1; temp<storelength; temp++){
+              var i = temp-1;
+                if( temp < 10 ){
+                      temp = '0' + temp;
+                  }
+                str[i] = temp;
+              }
+
+            for(var i=0; i<str.length; i++){
+                var temp = str[i];
+                  storeResult = message[temp];
+                  for(var j=0; j<storeList.length; j++){
+                      if(storeResult['storeId'] == storeList[j]){
+                          storeList[j] = storeResult['storeName']
+                      }
+                  }
+              }
+
+              var chart = c3.generate({
+                  bindto: "#chart",
+                  data: {
+                      rows: [
+                        storeList,
+                        scoreList
+                      ],
+                      type: 'bar'
+                  },
+                  bar: {
+                      width: {
+                          ratio: 0.5 // this makes bar width 50% of length between ticks
+                      }   // or //width: 100 // this makes bar width 100px
+                  }
+              });
+
+        });
+
+    }
 
     function layer(id){
       $('#popupBack').css("display", "");
