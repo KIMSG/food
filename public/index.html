@@ -107,6 +107,13 @@
           var year = date.getYear() + 1900;
           var month = date.getMonth()+1;
           var date = date.getDate();
+
+          if( month < 10 )
+            month = '0' + month;
+
+          if( date < 10 )
+            date = '0' + date;
+
           var today = year+"_"+month+"_"+date;
 
           regist(today, collect);
