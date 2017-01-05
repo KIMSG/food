@@ -71,7 +71,7 @@
                       foodList[i] = storeResult['storeName'];
                       function makeLabel(storeId, storeName){
                           htmlStr +="<div class='col-sm-4'>";
-                          htmlStr +=  "<div class='thumbnail' style='max-width:300px;' >";
+                          htmlStr +=  "<div class='thumbnail' style='max-width:300px; cursor: pointer;'>";
                           htmlStr +=    "<div class='caption'  onClick=\"layer('"+storeId+"'); return false;\">";
                           htmlStr +=      "<img style='width:100%; height:150px;' src='images/"+storeId+"/"+storeId+"01.jpg' alt='"+storeName+"'>";
                           htmlStr +=      "<h3>"+storeName+"</h3>";
@@ -187,7 +187,7 @@
        <div class="menu_popup" id="popupBack"></div>
        <div class="menu_popup_layer" id="popupLayer">
           <div class="menu_popup_title">
-             <div class="menu_popup_close" id="popupClose">X</div>
+             <div class="menu_popup_close" id="popupClose" style="cursor:pointer;">X</div>
              <div class="menu_popup_content" id="popupContent"></div>
           </div>
        </div>
