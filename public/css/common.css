@@ -28,7 +28,7 @@ body {
 .pic {
      width: 100%;
      max-width: 70px;
-     background: url(/images/kakao01.gif) no-repeat;
+     background: url(https://raw.githubusercontent.com/KIMSG/food/master/public/images/kakao01.gif) no-repeat;
      background-size: 70px;
       float:left;
     cursor:pointer;
@@ -144,21 +144,21 @@ body {
 }
 
 #lank_1 {
-  background-image: url(/images/lank/04.png);
+  background-image: url(https://raw.githubusercontent.com/KIMSG/food/master/public/images/lank/04.png);
   background-repeat: no-repeat;
   background-size: 100% 98%;
 
 }
 
 #lank_2 {
-  background-image: url(/images/lank/03.png);
+  background-image: url(https://raw.githubusercontent.com/KIMSG/food/master/public/images/lank/03.png);
   background-repeat: no-repeat;
   background-size: 100% 98%;
 
 }
 
 #lank_3 {
-  background-image: url(/images/lank/06.png);
+  background-image: url(https://raw.githubusercontent.com/KIMSG/food/master/public/images/lank/06.png);
   background-repeat: no-repeat;
   background-size: 100% 98%;
 
