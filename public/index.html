@@ -1,464 +1,181 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
-
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <!-- 부가적인 테마 -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!-- 파이어베이스 SDK-->
-    <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
-    <!-- Load c3.css -->
-    <link href="css/c3.css" rel="stylesheet" type="text/css">
-    <!-- Load d3.js and c3.js -->
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/layer.css">
-    <link rel="icon" href="/images/rice.png" type="image/x-icon">
-    <title>배고프다v.10</title>
-  </head>
-
-  <script type="text/javascript">
-    $(document).ready(function() {
-        /*PopUp 감추기*/
-       $('#popupBack').css("display", "none");
-       $('#popupLayer').css("display", "none");
-
-        /* Initialize Firebase*/
-        var config = {
-          apiKey: "",
-          authDomain: "",
-          databaseURL: "",
-          storageBucket: "",
-          messagingSenderId: ""
-        };
-
-        firebase.initializeApp(config);
-
-        /* 음식점 저장 리스트 */
-
-        var storelength = 0;
-        var foodList = [];   /*랜덤을 위한 음식 목록*/
-
-        firebase.database().ref('storeList/').once('value', function(e){
-            var message = e.val();
-            var str = [];
-            var storeResult = "";
-            storelength = Object.keys(message).length + 1;
-                if( storelength < 10 ){
-                    storelength = '0' + storelength;
-                }
-
-            for(var temp=1; temp<storelength; temp++){
-              var i = temp-1;
-                if( temp < 10 ){
-                      temp = '0' + temp;
-                  }
-                str[i] = temp;
-              }
-
-            /* 음식점 리스트 라벨 */
-            var htmlStr = "";
-                for(var i=0; i<str.length; i++){
-                    var temp = str[i];
-                      storeResult = message[temp];
-
-                      makeLabel(storeResult['storeId'],storeResult['storeName']);
-                      foodList[i] = storeResult['storeName'];
-                      function makeLabel(storeId, storeName){
-                          htmlStr +="<div class='col-sm-4'>";
-                          htmlStr +=  "<div class='thumbnail' style='max-width:300px; cursor: pointer;'>";
-                          htmlStr +=    "<div class='caption'  onClick=\"layer('"+storeId+"'); return false;\">";
-                          htmlStr +=      "<img style='width:100%; height:150px;' src='https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+storeId+"/"+storeId+"01.jpg' alt='"+storeName+"'>";
-                          htmlStr +=      "<h3>"+storeName+"</h3>";
-                          htmlStr +=    "</div>";
-                          htmlStr +=  "</div>";
-                          htmlStr +="</div> ";
-                      }
-                  }
-              $('#menuLabelList').html(htmlStr);
-
-        });
-
-        lank();
-        chart();
-        calendar();
-
-
-        /*가게 이름, id 등록*/
-        $('#BtnStore').click(function(){
-          var storeId = $('input[name=storeId]').val();
-          var storeName = $('input[name=storeName]').val();
-
-          if( storelength < 0 )
-          storelength = '01';
-          registStore(storelength, storeId, storeName);
-        });
-
-        /* 오늘 메뉴 등록 */
-        $('#BtnTest').click(function(){
-          var date = new Date();
-          var name = $('input[name=userName]').val();
-          var collect = $('input[name=collect]').val();
-          var year = date.getYear() + 1900;
-          var month = date.getMonth()+1;
-          var date = date.getDate();
-
-          if( month < 10 )
-            month = '0' + month;
-
-          if( date < 10 )
-            date = '0' + date;
-
-          var today = year+"_"+month+"_"+date;
-
-          regist(today, collect);
-        });
-
-        /*랜덤메뉴*/
-        $('#kakao_1').click(function(){
-          var rand = Math.floor(Math.random() * storelength);
-          var rand_menu = "";
-          for(var i=0; i<storelength-1; i++){
-            if(i == rand){
-                rand_menu = "<h3>"+foodList[i]+"</h3>";
-            }
-          }
-          $('#today_rand').html(rand_menu);
-        });
-
-        /*팝업창 닫기*/
-        $('#popupClose').click(function(){
-            $('#popupBack').css("display", "none");
-            $('#popupLayer').css("display", "none");
-        });
-
-
-    });
-
-  </script>
-
-  <body>
-<!--
-    <img alt="한식" src="images/rice.png">
-    <img alt="중식" src="images/kitchen-pack.png">
-    <img alt="양식" src="images/food.png">
-    <img alt="후식" src="images/cup.png">
--->
-
-   <div class="top">
-      <div class="pic"  id="kakao_1">
-         <div class="text">
-            <p>랜덤<br> 메뉴</p>
-         </div>
-      </div>
-      <h3 class="randTitle">오늘의 랜덤 메뉴</h3>
-      <div id="today_rand" class="todayRand" ></div>
-    </div>
-
-    <div class="side">
-     <div style="margin-top:5%;" id="monthly"></div>
-      <div>
-         <h5 style="width:20%; float:left;">오늘 : </h5>
-          <input alt="이름" type="text" name="collect" style="width:50%; float:left;" class="form-control" >
-         <button id="BtnTest" class="btn btn-default btn-ms" style="float:left;">입력</button>
-      </div>
-       <br><br>
-      <div>
-         <h5 style="width:20%; float:left;">가게id</h5>
-          <input alt="이름" type="text" name="storeId" style="width:50%; float:left;" class="form-control" >
-          <br><br>
-          <h5 style="width:20%; float:left;">가게이름</h5>
-          <input alt="이름" type="text" name="storeName" style="width:50%; float:left;" class="form-control" >
-         <button id="BtnStore" class="btn btn-default btn-ms" style="float:left;">입력</button>
-      </div>
-    </div>
-<!--    <div class="mainLank" id="lank">
-      <div class="lank" id="lank_1">맛있는접시</div>
-      <div class="lank" id="lank_2">해물칼국수</div>
-      <div class="lank" id="lank_3">뼈해장국</div>
-    </div>-->
-
-    <div class="lanking">
-       - 총 별점 -
-      <div class="mainChart" id="chart"></div>
-    </div>
-
-    <div class="mainContent" id="content">
-
-      <!--시작-->
-       <div class="menu_popup" id="popupBack"></div>
-       <div class="menu_popup_layer" id="popupLayer">
-          <div class="menu_popup_title">
-             <div class="menu_popup_close" id="popupClose" style="cursor:pointer;">X</div>
-             <div class="menu_popup_content" id="popupContent"></div>
-          </div>
-       </div>
-
-      <div class="row" id="menuLabelList"> </div> <!--//row-->
-      <div class="menu_size" id="menu"></div>
-    </div>
-
-  </body>
-
-  <script type="text/javascript">
-    /*랭킹 차트를 위함*/
-    function lank(){
-
-    }
-
-
-    /*차트를 위함*/
-    function chart(){
-
-        var starList = [];
-        var storeList = [];
-        var score = "";
-        var storeResult = "";
-        var scoreList = [];
-
-        firebase.database().ref('starList/').once('value', function(e){
-            var message = e.val();
-            var starlength = Object.keys(message).length;
-            storeList = Object.keys(message);
-
-            for ( var stars in storeList) {
-                starList[stars] = message[storeList[stars]];
-            }
-
-            for(var i=0; i<starList.length; i++){
-                score = starList[i];
-                var total = 0;
-
-                for(var j=1; j<score.length; j++){
-                    storeResult = score[j];
-                    total+= eval(storeResult['star']);
-                }
-                scoreList[i] = total;
-            }
-            makeChart(storeList,scoreList);
-
-        });
-    }
-
-    function makeChart(storeList,scoreList){
-        /* 음식점 저장 리스트 */
-
-        var storelength = 0;
-        firebase.database().ref('storeList/').once('value', function(e){
-            var message = e.val();
-            var str = [];
-            var storeResult = "";
-            storelength = Object.keys(message).length + 1;
-                if( storelength < 10 ){
-                    storelength = '0' + storelength;
-                }
-
-            for(var temp=1; temp<storelength; temp++){
-              var i = temp-1;
-                if( temp < 10 ){
-                      temp = '0' + temp;
-                  }
-                str[i] = temp;
-              }
-
-            for(var i=0; i<str.length; i++){
-                var temp = str[i];
-                  storeResult = message[temp];
-                  for(var j=0; j<storeList.length; j++){
-                      if(storeResult['storeId'] == storeList[j]){
-                          storeList[j] = storeResult['storeName']
-                      }
-                  }
-              }
-
-              var chart = c3.generate({
-                  bindto: "#chart",
-                  data: {
-                      rows: [
-                        storeList,
-                        scoreList
-                      ],
-                      type: 'bar'
-                  },
-                  bar: {
-                      width: {
-                          ratio: 0.5 // this makes bar width 50% of length between ticks
-                      }   // or //width: 100 // this makes bar width 100px
-                  }
-              });
-
-        });
-
-    }
-
-    function layer(id){
-      $('#popupBack').css("display", "");
-      $('#popupLayer').css("display", "");
-      $('#popupContent').load("/html/"+id+".html");
-
-        /*댓글 불러오기*/
-        firebase.database().ref('RepleList/'+id+'/').on('value', function(e){
-            var message = e.val();
-
-            if(message == null || message == ""){
-                var htmlStr = "";
-                htmlStr += "<div class='reple' id='"+id+"'>";
-                htmlStr += "    <div class='row'>";
-                htmlStr += "         <div class='col-md-10' style='color:grey;'>댓글 없음</div>";
-                htmlStr += "    </div>";
-                htmlStr += "</div>";
-            }else{
-                var replelength = Object.keys(message).length;
-                var reples = Object.keys(message);
-                var htmlStr = "";
-
-                for(var i=0; i<replelength; i++){
-                    var reple = reples[i];
-                    htmlStr += repleList(replelength,id,reple);
-                }
-
-            }
-            $('#comentList').html(htmlStr);
-
-        });
-
-        $( 'html, body' ).animate( { scrollTop : 0 }, 400 );
-    }
-
-    /*가게등록*/
-    function registStore(length,storeId, storeName){
-      firebase.database().ref('storeList/'+length+'/').set({
-          storeId : storeId,
-          storeName : storeName
-        });
-    }
-
-    /*이번달 점심 등록*/
-    function regist(today, collect){
-      firebase.database().ref('todayVisit/'+today+'/').set({
-          userCollect : collect
-        });
-    }
-
-    /*이번달 리스트*/
-    function show(today){
-      firebase.database().ref('todayVisit/'+today+'/').once('value', function(e){
-        var message = e.val();
-        var str = "";
-        for(var userCollect in message){
-          str += message[userCollect] + "\n";
-        }
-        $('#'+today).html(str);
-      });
-    }
-
-    /*달력 계산*/
-    function calendar(){
-      var date = new Date();
-      var currentYear = date.getYear() + 1900;
-      var currentMonth = date.getMonth()+1;
-      var currentDate = date.getDate();
-      var currentDay = date.getDay();
-
-      var dateString = new Array('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
-      var lastDate = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
-
-      if( (currentYear % 4 === 0 && currentYear % 100 !== 0) || currentYear % 400 === 0 )
-      lastDate[1] = 29;
-      //각 달의 마지막 일을 계산, 윤년의 경우 년도가 4의 배수이고 100의 배수가 아닐 때 혹은 400의 배수일 때 2월달이 29일 임.
-
-      var currentLastDate = lastDate[currentMonth-1];
-      var week = Math.ceil( ( currentDay + currentLastDate ) / 7 );
-      //총 몇 주인지 구함.
-
-      if(currentMonth != 1)
-      var prevDate = currentYear + '-' + ( currentMonth - 1 ) + '-' + currentDate;
-      else
-      var prevDate = ( currentYear - 1 ) + '-' + 12 + '-' + currentDate;
-      //만약 이번달이 1월이라면 1년 전 12월로 출력.
-
-      if(currentMonth != 12)
-      var nextDate = currentYear + '-' + ( currentMonth + 1 ) + '-' + currentDate;
-      else
-      var nextDate = ( currentYear + 1 ) + '-' + 1 + '-' + currentDate;
-      //만약 이번달이 12월이라면 1년 후 1월로 출력.
-
-
-      if( currentMonth < 10 )
-      var currentMonth = '0' + currentMonth;
-      //10월 이하라면 앞에 0을 붙여준다.
-
-      var calendar = '';
-      var dateNum = 1 - currentDay;
-
-      calendar += '<h4>이번달 점심 방문</h4>';
-      for(var i = 0; i < currentLastDate; i++){
-        var day = pad(i, 2);
-        var today = currentYear+"_"+currentMonth+"_"+day;
-        calendar += "<h5 >"+today+" :<span style='color:darkcyan;' id='"+today+"'></span></h5>";
-        show(today);
-      }
-      $('#monthly').html(calendar);
-
-    }
-
-    function pad(n, width) {
-      n = n + '';
-      return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
-    }
-
-
-    /*댓글 전체 불러오기*/
-    function repleList(replelength,storeId,reple){
-        var htmlStr = "";
-
-        firebase.database().ref('RepleList/'+storeId+'/'+reple+'/').on('value', function(e){
-            var message = e.val();
-            var coment = "";
-            var registName = "";
-            var registDate = "";
-
-            coment = message['coment'];
-            registName = message['registName'];
-            registDate = message['registDate'];
-
-            htmlStr += "<div class='reple' id='"+storeId+"'>";
-            htmlStr += "    <div class='row'>";
-            htmlStr += "         <div class='col-md-10' style='font-weight: 900;'><h3>"+registName+"<small>&nbsp;&nbsp;"+registDate+"</small></h3></div>";
-            htmlStr += "    </div>";
-            htmlStr += "    <div class='row'>";
-            htmlStr += "         <div class='col-md-10' style='color:grey;'>"+coment+"</div>";
-            htmlStr += "    </div>";
-            htmlStr += "</div>";
-        });
-
-        return htmlStr;
-    }
-
-
-    /*댓글 등록*/
-    function registComent(storeId, registName, storeComent){
-      var date = new Date();
-      var currentYear = date.getYear() + 1900;
-      var currentMonth = date.getMonth()+1;
-      var currentDate = date.getDate();
-      var currentHour = date.getHours();
-      var currentMinutes = date.getMinutes();
-      var registDate = currentYear+"_"+currentMonth+"_"+currentDate+" ("+currentHour+" : "+currentMinutes+")";
-
-      firebase.database().ref('RepleList/'+storeId+'/'+registName+'/').set({
-          coment : storeComent,
-          registName : registName,
-          registDate : registDate
-        });
-    }
-
-
-  </script>
-
+	<head>
+		<title>배고프다.v3</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<!-- jquery -->
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	  <!-- 파이어베이스 SDK-->
+	  <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="assets/css/custom.css" />
+		<link rel="stylesheet" type="text/css" href="slick/slick.css"/>
+		<link rel="stylesheet" type="text/css" href="slick/slick-theme.css">
+
+		<script>
+		$(document).ready(function(){
+			// get the mPopup
+			var mpopup = $("#mpopupBox");
+			// get the close action element
+			// var close = $(".close");
+
+			// open the mPopup once the link is clicked
+			// $("#mpopupLink").on( "click", function() {
+			//     mpopup.css("display", "block");
+			// });
+
+			// close the mPopup once close element is clicked
+			// close.on( "click", function() {
+			// 		mpopup.css("display", "none");
+			// });
+
+			// close the mPopup when user clicks outside of the box
+			// $(window).on( "click", function(event) {
+			//     if (event.target == mpopup) {
+			// 			mpopup.css("display", "none");
+			//     }
+			// });
+		});
+
+	  // Initialize Firebase
+	  var config = {
+	    apiKey: "AIzaSyA39-3l4_HNf1bzIbXw4ItnLZB9_-zTu6E",
+	    authDomain: "food-63973.firebaseapp.com",
+	    databaseURL: "https://food-63973.firebaseio.com",
+	    projectId: "food-63973",
+	    storageBucket: "food-63973.appspot.com",
+	    messagingSenderId: "842188562679"
+	  };
+	  firebase.initializeApp(config);
+
+		var storeList = {};
+		var storeIdList = [];
+		var storeNameList = [];
+		var htmlStr = "";
+
+		firebase.database().ref('storeList/').on('value', function(e){
+				var message = e.val();
+				storeList = Object.keys(message);
+				// var storelength = Object.keys(message).length + 1;
+
+				for (var i = 1; i < message.length; i++) {
+					storeIdList[i] = message[i]['storeId'];
+					storeNameList[i] = message[i]['storeName'];
+					makeLabel(message[i]['storeId'], message[i]['storeName'], i);
+				}
+				$('#pContent').html(htmlStr);
+				$(".imgBtn").on( "click", function() {
+						var $this = $(this);
+						var id = $this.attr('id');
+						var number = $this.data("record");
+						var name = $this.data("name");
+						makeBtn(id, name, number);
+				});
+		});
+
+		function makeLabel(storeId, storeName, number){
+				htmlStr +="<div class='4u 6u(medium)'>";
+				htmlStr +=	"<section class='box feature'>";
+				htmlStr +=  	"<a href='javascript:void(0);'  data-record='"+number+"' data-name='"+storeName+"' id='"+storeId+"' class='image featured imgBtn'>";
+				htmlStr +=  		"<img src='https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+storeId+"/"+storeId+"01.jpg' alt='' />";
+				htmlStr +=    "</a>";
+				htmlStr +=    "<div class='inner'><header><h2>"+storeName+"</h2></header></div>";
+				htmlStr +=	"</section> ";
+				htmlStr +="</div>";
+		}
+
+		function makeBtn(id, name, number){
+			var htmlImgStr = "";
+			for (var i = 1; i <= 10; i++) {
+				if(isValidUrl("https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+id+"/"+id+"0"+i+".jpg") != false){
+					htmlImgStr += isValidUrl("https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+id+"/"+id+"0"+i+".jpg");
+				}else {
+					break;
+				}
+			}
+
+			var htmlPop = "";
+			htmlPop +="<div id='pop_"+id+"' class='mpopup'>";
+	    htmlPop +="<div class='mpopup-content'>";
+      htmlPop +="<div class='mpopup-head'>";
+      htmlPop +=	"<span class='close'>×</span>";
+      htmlPop +=	"<h2>"+name+"</h2>";
+      htmlPop +="</div>";
+      htmlPop +="<div class='mpopup-main'>";
+      htmlPop +="<p class='slideImg'>"+htmlImgStr+"</p>";
+      htmlPop +="</div></div></div>";
+
+			$('body').append(htmlPop);
+
+			$(".close").on('click', function(){
+				$('.mpopup').remove();
+			});
+
+			$('.slideImg').slick({
+			  dots: true,
+			  infinite: true,
+			  // speed: 300,
+			  slidesToShow: 1,
+			  adaptiveHeight: true
+			});
+		}
+
+		function isValidUrl(urls) {
+			var htmlImgStr = "";
+			var http = new XMLHttpRequest();
+	    http.open('HEAD', urls, false);
+	    http.send();
+	    if (http.status != 404) {
+					htmlImgStr ="<img style='height:500px;' src="+urls+">";
+			} else{return false;}
+			return htmlImgStr;
+		}
+
+
+	</script>
+	</head>
+	<body class="homepage">
+		<div id="page-wrapper">
+			<!-- Features -->
+			<div id="features-wrapper">
+				<div class="container">
+					<!-- trigger the mPopup -->
+					<!-- <a href="javascript:void(0);" id="mpopupLink">Open Popup</a> -->
+					<div class="row"  id="pContent"></div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<div id="footer-wrapper">
+				<footer id="footer" class="container">
+					<div class="row">
+						<div class="3u 6u(medium) 12u$(small)">
+								<div id="copyright">
+									<ul class="menu">
+										<li>&copy; 김슬기. All rights reserved</li>
+									</ul>
+								</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+		</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+			<!-- slick.js -->
+
+			<script type="text/javascript" src="slick/slick.min.js"></script>
+
+	</body>
 </html>

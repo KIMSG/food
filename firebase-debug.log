@@ -1,0 +1,41 @@
+[debug] [2018-03-29T06:16:57.889Z] ----------------------------------------------------------------------
+[debug] [2018-03-29T06:16:57.892Z] Command:       /usr/local/bin/node /usr/local/bin/firebase serve
+[debug] [2018-03-29T06:16:57.892Z] CLI Version:   3.17.6
+[debug] [2018-03-29T06:16:57.892Z] Platform:      darwin
+[debug] [2018-03-29T06:16:57.892Z] Node Version:  v9.8.0
+[debug] [2018-03-29T06:16:57.893Z] Time:          Thu Mar 29 2018 15:16:57 GMT+0900 (KST)
+[debug] [2018-03-29T06:16:57.893Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-03-29T06:16:57.908Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-03-29T06:16:57.909Z] > authorizing via signed-in user
+[debug] [2018-03-29T06:16:57.910Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-03-29T06:16:57.911Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/d52u9HXor_QSL0eLNhuU8DD4esVgt-DUgkXvOtW1Vwo',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Thu Mar 29 2018 15:16:57 GMT+0900 (KST)
+[debug] [2018-03-29T06:16:58.324Z] <<< HTTP RESPONSE 200
+[debug] [2018-03-29T06:16:58.347Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/food-63973  
+  
+ Thu Mar 29 2018 15:16:58 GMT+0900 (KST)
+[debug] [2018-03-29T06:16:59.440Z] <<< HTTP RESPONSE 200
+[debug] [2018-03-29T06:16:59.440Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/food-63973/tokens  
+  
+ Thu Mar 29 2018 15:16:59 GMT+0900 (KST)
+[debug] [2018-03-29T06:17:00.793Z] <<< HTTP RESPONSE 200
+[debug] [2018-03-29T06:17:00.794Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/food-63973  
+  
+ Thu Mar 29 2018 15:17:00 GMT+0900 (KST)
+[debug] [2018-03-29T06:17:02.273Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from '/Users/sg/firebase_workspace/food'...
+[info] 
+[debug] [2018-03-29T06:17:02.276Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/842188562679/clients/_:getWebAppConfig  
+  
+ Thu Mar 29 2018 15:17:02 GMT+0900 (KST)
+[debug] [2018-03-29T06:17:03.571Z] <<< HTTP RESPONSE 200
+[info] i  hosting: Serving hosting files from: public
+[info] ✔  hosting: Local server: http://localhost:5000
+
