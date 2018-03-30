@@ -57,7 +57,6 @@
 		var storeList = {};
 		var storeIdList = [];
 		var storeNameList = [];
-		var storeCateList = [];
 		var htmlStr = "";
 
 		firebase.database().ref('storeList/').on('value', function(e){
@@ -68,8 +67,7 @@
 				for (var i = 1; i < message.length; i++) {
 					storeIdList[i] = message[i]['storeId'];
 					storeNameList[i] = message[i]['storeName'];
-					storeCateList[i] = message[i]['storeCate'];
-					makeLabel(message[i]['storeId'], message[i]['storeName'],message[i]['storeCate'], i);
+					makeLabel(message[i]['storeId'], message[i]['storeName'], i);
 				}
 				$('#pContent').html(htmlStr);
 				$(".imgBtn").on( "click", function() {
@@ -81,10 +79,10 @@
 				});
 		});
 
-		function makeLabel(storeId, storeName, storeCate, number){
+		function makeLabel(storeId, storeName, number){
 				htmlStr +="<div class='4u 6u(medium)'>";
 				htmlStr +=	"<section class='box feature'>";
-				htmlStr +=  	"<a href='javascript:void(0);'  data-record='"+number+"' data-name='"+storeName+"' data-cate='"+storeCate+"' id='"+storeId+"' class='image featured imgBtn'>";
+				htmlStr +=  	"<a href='javascript:void(0);'  data-record='"+number+"' data-name='"+storeName+"' id='"+storeId+"' class='image featured imgBtn'>";
 				htmlStr +=  		"<img src='https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+storeId+"/"+storeId+"01.jpg' alt='' />";
 				htmlStr +=    "</a>";
 				htmlStr +=    "<div class='inner'><header><h2>"+storeName+"</h2></header></div>";
@@ -122,7 +120,7 @@
 			$('.slideImg').slick({
 			  dots: true,
 			  infinite: true,
-			  speed: 300,
+			  // speed: 300,
 			  slidesToShow: 1,
 			  adaptiveHeight: true
 			});
@@ -134,51 +132,21 @@
 	    http.open('HEAD', urls, false);
 	    http.send();
 	    if (http.status != 404) {
-					htmlImgStr ="<img src="+urls+">";
+					htmlImgStr ="<img style='height:500px;' src="+urls+">";
 			} else{return false;}
 			return htmlImgStr;
 		}
 
-		function sortCate(cate){
-			$(".imgBtn").parent().parent().css('display','block');
-			for (var i = 0; i < storeCateList.length; i++) {
-				if(storeCateList[i] != cate) {
-					var str = storeIdList[i];
-					$("#"+str).parent().parent().css('display','none');
-				}
-			}
 
-
-			// else {
-			// 	$(this).css('display','block');
-			// 	console.log("::::"+$(this));
-			// }
-			// console.log($('.imgBtn').data("cate"));
-		}
 	</script>
 	</head>
 	<body class="homepage">
-
 		<div id="page-wrapper">
-			<div id="header-wrapper">
-					<header id="header" class="container">
-
-						<!-- Nav -->
-							<nav id="nav">
-								<ul>
-									<li class="current" style="white-space: nowrap;"><a href="index.html">HOME</a></li>
-									<li style="white-space: nowrap;"><a href="javascript:;" onclick="sortCate('food');">음식점</a></li>
-									<li style="white-space: nowrap;"><a href="javascript:;" onclick="sortCate('cafe');">카페</a></li>
-									<li style="white-space: nowrap;"><a href="javascript:;" onclick="sortCate('drink');">회식장소</a></li>
-								</ul>
-							</nav>
-
-					</header>
-				</div>
 			<!-- Features -->
 			<div id="features-wrapper">
 				<div class="container">
 					<!-- trigger the mPopup -->
+					<!-- <a href="javascript:void(0);" id="mpopupLink">Open Popup</a> -->
 					<div class="row"  id="pContent"></div>
 				</div>
 			</div>

@@ -1433,7 +1433,7 @@
 	}
 
 	header {
-		margin: 0 0 2em 0;
+		/* margin: 0 0 2em 0; */
 	}
 
 		header h2, header h3 {
@@ -1740,7 +1740,7 @@
 		}
 
 			.box.feature .inner {
-				padding: 4em 2em 3em 2em;
+				padding: 10px;
 			}
 
 			.box.feature h2 {
@@ -2186,7 +2186,7 @@
 		/* Nav */
 
 			#nav {
-				display: none;
+				/* display: none; */
 			}
 
 		/* Banner */

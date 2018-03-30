@@ -31,6 +31,17 @@
     animation-duration: 0.4s;
 }
 
+
+@media screen and (max-width: 736px) {
+  .mpopup-content {
+    width: 100%;
+  }
+
+  .slideImg img{
+    height: 200px !important;
+  }
+}
+
 .mpopup-head {
     padding: 10px 16px;
     color: white;
@@ -64,4 +75,8 @@
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+.slideImg img{
+  height: 500px;
 }
