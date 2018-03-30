@@ -107,12 +107,6 @@
 			});
 		}
 
-		// function regLink(temp, id, i){
-		// 	firebase.database().ref('storeList/'+temp+'/storeImgLink/'+i+"/").set({
-		// 			url : "https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+id+"/"+id+"0"+i+".jpg"
-		// 	});
-		// }
-
 		function sortCate(cate){
 			$(".imgBtn").parent().parent().css('display','block');
 			for (var i = 0; i < storeCateList.length; i++) {
@@ -157,7 +151,9 @@
 						<div class="3u 6u(medium) 12u$(small)">
 								<div id="copyright">
 									<ul class="menu">
-										<li>&copy; 김슬기. All rights reserved <a href="feed.html"><h3>새로운 상점 등록</h3></a></li>
+										<li>&copy; 김슬기. All rights reserved <a href="feed.html"><h3>새로운 상점 등록</h3></a>
+											<a href="upload.html"><h3>새로운 사진 등록</h3></a>
+										</li>
 									</ul>
 								</div>
 						</div>
