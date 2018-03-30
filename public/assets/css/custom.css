@@ -80,3 +80,10 @@
   max-height: 400px;
   overflow: scroll;
 }
+
+.repleBtn{
+  border: 1px solid black;
+  cursor: pointer;
+  width: 50px;
+  text-align: center;
+}
