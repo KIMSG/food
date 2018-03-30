@@ -45,7 +45,11 @@
 					storeIdList[i] = message[i]['storeId'];
 					storeNameList[i] = message[i]['storeName'];
 					storeCateList[i] = message[i]['storeCate'];
-					makeLabel(message[i]['storeId'], message[i]['storeName'],message[i]['storeCate'], i);
+					var firstImg = "images/no-image.png";
+					if(message[i]['storeImgLink']){
+						firstImg = message[i]['storeImgLink']['1']['url'];
+					}
+					makeLabel(message[i]['storeId'], message[i]['storeName'],message[i]['storeCate'],firstImg, i);
 				}
 				$('#pContent').html(htmlStr);
 				$(".imgBtn").on( "click", function() {
@@ -59,12 +63,11 @@
 				});
 		});
 
-		function makeLabel(storeId, storeName, storeCate, number){
-			var url = "https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+storeId+"/"+storeId+"01.jpg";
+		function makeLabel(storeId, storeName, storeCate, firstImg, number){
 				htmlStr +="<div class='4u 6u(medium)'>";
 				htmlStr +=	"<section class='box feature'>";
 				htmlStr +=  	"<a href='javascript:void(0);'  data-record='"+number+"' data-name='"+storeName+"' data-cate='"+storeCate+"' id='"+storeId+"' class='image featured imgBtn'>";
-				htmlStr +=  		"<img src='"+url+"' alt='' />";
+				htmlStr +=  		"<img src='"+firstImg+"' alt='' />";
 				htmlStr +=    "</a>";
 				htmlStr +=    "<div class='inner'><header><h2>"+storeName+"</h2></header></div>";
 				htmlStr +=	"</section> ";
