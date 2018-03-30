@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>배고프다.v3</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/images/rice.png" type="image/x-icon">
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<!-- jquery -->
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	  <!-- 파이어베이스 SDK-->
+	  <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="assets/css/custom.css" />
+		<link rel="stylesheet" type="text/css" href="slick/slick.css"/>
+		<link rel="stylesheet" type="text/css" href="slick/slick-theme.css">
+
+		<script>
+
+	  // Initialize Firebase
+	  var config = {
+	    apiKey: "AIzaSyA39-3l4_HNf1bzIbXw4ItnLZB9_-zTu6E",
+	    authDomain: "food-63973.firebaseapp.com",
+	    databaseURL: "https://food-63973.firebaseio.com",
+	    projectId: "food-63973",
+	    storageBucket: "food-63973.appspot.com",
+	    messagingSenderId: "842188562679"
+	  };
+	  firebase.initializeApp(config);
+
+		var storelength = 0;
+
+		firebase.database().ref('storeList/').on('value', function(e){
+			var message = e.val();
+			storelength = message.length;
+		});
+
+		$(document).ready(function() {
+			/*가게 이름, id 등록*/
+			$('#BtnStore').click(function(){
+				var storeId = $('input[name=storeId]').val();
+				var storeName = $('input[name=storeName]').val();
+				var storeCate = $('input[type=radio][name=storeCate]:checked').val();
+
+				if(storeId != null && storeId != ""){
+					if(storeName != null && storeName != ""){
+						registStore(storelength, storeId, storeName, storeCate);
+					}else {
+						alert('상호명 입력');
+					}
+				}else {
+					alert('id 입력');
+				}
+
+			});
+		});
+
+    /*가게등록*/
+    function registStore(length, storeId, storeName, storeCate){
+      firebase.database().ref('storeList/'+length+'/').set({
+          storeId : storeId,
+          storeName : storeName,
+					storeCate : storeCate
+      });
+			alert('등록 되었습니다.');
+			window.location.reload();
+    }
+
+	</script>
+	</head>
+	<body class="homepage">
+
+		<div id="page-wrapper">
+			<div id="header-wrapper">
+					<header id="header" class="container">
+						<!-- Nav -->
+							<nav id="nav">
+								<ul>
+									<li class="current" style="white-space: nowrap;"><a href="index.html">HOME</a></li>
+								</ul>
+							</nav>
+					</header>
+				</div>
+				<div id="main-wrapper">
+					<div class="container">
+						<div class="row 200%">
+							<div class="4u 12u$(medium)">
+								<div id="sidebar">
+
+									<!-- Sidebar -->
+										<section>
+											<h3>사용방법</h3>
+											<p>1. id 와 상호명을 입력한다. (id는 꼭 영어로)<br>
+											예) babcho / 밥초</p>
+
+										</section>
+
+								</div>
+							</div>
+							<div class="8u 12u$(medium) important(medium)">
+								<div id="content">
+
+									<!-- Content -->
+										<article>
+											<h2>ID </h2>
+											<p><input type="text" name="storeId"></p>
+
+											<h2>상호명 </h2>
+											<p><input type="text" name="storeName"></p>
+
+											<h2>분류 </h2>
+											<p>
+												<input type="radio" checked name="storeCate" value="food"><label>음식점</label>
+												<input type="radio"  name="storeCate" value="cafe"><label>카페</label>
+												<input type="radio"  name="storeCate" value="drink"><label>회식장소</label>
+											</p>
+
+										</article>
+										<div id="BtnStore" style="border:1px solid black;">저장</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			<!-- Footer -->
+			<div id="footer-wrapper">
+				<footer id="footer" class="container">
+					<div class="row">
+						<div class="3u 6u(medium) 12u$(small)">
+								<div id="copyright">
+									<ul class="menu">
+										<li>&copy; 김슬기. All rights reserved</li>
+									</ul>
+								</div>
+						</div>
+					</div>
+				</footer>
+			</div>
+		</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+			<!-- slick.js -->
+
+			<script type="text/javascript" src="slick/slick.min.js"></script>
+
+	</body>
+</html>

@@ -4,7 +4,7 @@
 		<title>배고프다.v3</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/images/rice.png" type="image/x-icon">
+    <link rel="icon" href="images/rice.png" type="image/x-icon">
 		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
@@ -19,29 +19,6 @@
 		<link rel="stylesheet" type="text/css" href="slick/slick-theme.css">
 
 		<script>
-		$(document).ready(function(){
-			// get the mPopup
-			var mpopup = $("#mpopupBox");
-			// get the close action element
-			// var close = $(".close");
-
-			// open the mPopup once the link is clicked
-			// $("#mpopupLink").on( "click", function() {
-			//     mpopup.css("display", "block");
-			// });
-
-			// close the mPopup once close element is clicked
-			// close.on( "click", function() {
-			// 		mpopup.css("display", "none");
-			// });
-
-			// close the mPopup when user clicks outside of the box
-			// $(window).on( "click", function(event) {
-			//     if (event.target == mpopup) {
-			// 			mpopup.css("display", "none");
-			//     }
-			// });
-		});
 
 	  // Initialize Firebase
 	  var config = {
@@ -63,7 +40,6 @@
 		firebase.database().ref('storeList/').on('value', function(e){
 				var message = e.val();
 				storeList = Object.keys(message);
-				// var storelength = Object.keys(message).length + 1;
 
 				for (var i = 1; i < message.length; i++) {
 					storeIdList[i] = message[i]['storeId'];
@@ -82,10 +58,11 @@
 		});
 
 		function makeLabel(storeId, storeName, storeCate, number){
+			var url = "https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+storeId+"/"+storeId+"01.jpg";
 				htmlStr +="<div class='4u 6u(medium)'>";
 				htmlStr +=	"<section class='box feature'>";
 				htmlStr +=  	"<a href='javascript:void(0);'  data-record='"+number+"' data-name='"+storeName+"' data-cate='"+storeCate+"' id='"+storeId+"' class='image featured imgBtn'>";
-				htmlStr +=  		"<img src='https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+storeId+"/"+storeId+"01.jpg' alt='' />";
+				htmlStr +=  		"<img src='"+url+"' alt='' />";
 				htmlStr +=    "</a>";
 				htmlStr +=    "<div class='inner'><header><h2>"+storeName+"</h2></header></div>";
 				htmlStr +=	"</section> ";
@@ -94,13 +71,15 @@
 
 		function makeBtn(id, name, number){
 			var htmlImgStr = "";
-			for (var i = 1; i <= 10; i++) {
-				if(isValidUrl("https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+id+"/"+id+"0"+i+".jpg") != false){
-					htmlImgStr += isValidUrl("https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+id+"/"+id+"0"+i+".jpg");
-				}else {
-					break;
-				}
-			}
+
+			firebase.database().ref('storeList/'+number+'/storeImgLink/').on('value', function(e){
+					var message = e.val();
+					for (var i = 1; i < message.length; i++) {
+						firebase.database().ref('storeList/'+number+'/storeImgLink/'+i+"/url/").on('value', function(el){
+								htmlImgStr += "<img src="+el.val()+">";
+						});
+					}
+			});
 
 			var htmlPop = "";
 			htmlPop +="<div id='pop_"+id+"' class='mpopup'>";
@@ -128,16 +107,11 @@
 			});
 		}
 
-		function isValidUrl(urls) {
-			var htmlImgStr = "";
-			var http = new XMLHttpRequest();
-	    http.open('HEAD', urls, false);
-	    http.send();
-	    if (http.status != 404) {
-					htmlImgStr ="<img src="+urls+">";
-			} else{return false;}
-			return htmlImgStr;
-		}
+		// function regLink(temp, id, i){
+		// 	firebase.database().ref('storeList/'+temp+'/storeImgLink/'+i+"/").set({
+		// 			url : "https://raw.githubusercontent.com/KIMSG/food/master/public/images/"+id+"/"+id+"0"+i+".jpg"
+		// 	});
+		// }
 
 		function sortCate(cate){
 			$(".imgBtn").parent().parent().css('display','block');
@@ -147,13 +121,6 @@
 					$("#"+str).parent().parent().css('display','none');
 				}
 			}
-
-
-			// else {
-			// 	$(this).css('display','block');
-			// 	console.log("::::"+$(this));
-			// }
-			// console.log($('.imgBtn').data("cate"));
 		}
 	</script>
 	</head>
@@ -190,7 +157,7 @@
 						<div class="3u 6u(medium) 12u$(small)">
 								<div id="copyright">
 									<ul class="menu">
-										<li>&copy; 김슬기. All rights reserved</li>
+										<li>&copy; 김슬기. All rights reserved <a href="feed.html"><h3>새로운 상점 등록</h3></a></li>
 									</ul>
 								</div>
 						</div>
@@ -207,7 +174,6 @@
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="assets/js/main.js"></script>
 			<!-- slick.js -->
-
 			<script type="text/javascript" src="slick/slick.min.js"></script>
 
 	</body>
