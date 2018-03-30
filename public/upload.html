@@ -79,6 +79,8 @@
 			firebase.database().ref('storeList/'+id+'/storeImgLink/'+temp+"/").set({
 					url : img
 			});
+			alert('등록 되었습니다.');
+			window.location.reload();
 		}
 
 

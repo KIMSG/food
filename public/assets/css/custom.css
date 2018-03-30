@@ -1,10 +1,4 @@
 /* 추가 */
-/* .slideImg button{
-    background-color: grey !important;
-    color: black !important;
-    width: auto !important;
-} */
-
 .mpopup {
     display: block;
     position: fixed;
@@ -79,4 +73,10 @@
 
 .slideImg img{
   height: 500px;
+}
+
+#reple {
+  margin-bottom: 0px;
+  max-height: 400px;
+  overflow: scroll;
 }

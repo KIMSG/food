@@ -54,6 +54,7 @@
 						var number = $this.data("record");
 						var name = $this.data("name");
 						makeBtn(id, name, number);
+						makeReple(id, name, number);
 				});
 		});
 
@@ -90,6 +91,7 @@
       htmlPop +="</div>";
       htmlPop +="<div class='mpopup-main'>";
       htmlPop +="<p class='slideImg'>"+htmlImgStr+"</p>";
+			htmlPop +="<p id='reple'></p>";
       htmlPop +="</div></div></div>";
 
 			$('body').append(htmlPop);
@@ -105,6 +107,61 @@
 			  slidesToShow: 1,
 			  adaptiveHeight: true
 			});
+		}
+
+		function makeReple(id, name, number){
+        /*댓글 불러오기*/
+        firebase.database().ref('RepleList/'+id+'/').on('value', function(e){
+            var message = e.val();
+
+            if(message == null || message == ""){
+                var htmlStrR = "";
+                htmlStrR += "<div class='reple'>";
+                htmlStrR += "    <div class='row'>";
+                htmlStrR += "         <div style='color:grey;'>댓글 없음</div>";
+                htmlStrR += "    </div>";
+                htmlStrR += "</div>";
+            }else{
+                var replelength = Object.keys(message).length;
+                var reples = Object.keys(message);
+                var htmlStrR = "";
+
+                for(var i=0; i<replelength; i++){
+                    var reple = reples[i];
+                    htmlStrR += repleList(replelength,id,reple);
+                }
+
+            }
+            $('#reple').html(htmlStrR);
+
+        });
+		}
+
+		/*댓글 전체 불러오기*/
+		function repleList(replelength,storeId,reple){
+				var htmlStrR = "";
+
+				firebase.database().ref('RepleList/'+storeId+'/'+reple+'/').on('value', function(e){
+						var message = e.val();
+						var coment = "";
+						var registName = "";
+						var registDate = "";
+
+						coment = message['coment'];
+						registName = message['registName'];
+						registDate = message['registDate'];
+
+						htmlStrR += "<div class='reple' >";
+						htmlStrR += "    <div class='row'>";
+						htmlStrR += "         <div>"+registName+"("+registDate+")</div>";
+						htmlStrR += "    </div>";
+						htmlStrR += "    <div class='row'>";
+						htmlStrR += "         <div style='color:grey;'>"+coment+"</div>";
+						htmlStrR += "    </div>";
+						htmlStrR += "</div>";
+				});
+
+				return htmlStrR;
 		}
 
 		function sortCate(cate){
